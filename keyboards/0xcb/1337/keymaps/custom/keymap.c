@@ -55,7 +55,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_TOOLS] = LAYOUT(
     LGUI(KC_A), LGUI(KC_S), KC_MUTE,
     TO(4),  LGUI(KC_V),  LGUI(KC_C),
-    TO(0),  LGUI(KC_X),  LGUI(KC_ENTER)
+    TO(0),  LGUI(KC_X),  KC_ENTER
 )
 };
 
