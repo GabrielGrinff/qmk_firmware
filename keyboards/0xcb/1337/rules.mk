@@ -21,6 +21,7 @@ RGBLIGHT_ENABLE = yes       # Enable keyboard RGB underglow
 UNICODE_ENABLE = no         # Unicode
 BLUETOOTH_ENABLE = no       # Enable Bluetooth
 AUDIO_ENABLE = no           # Audio output
+KEY_LOCK_ENABLE = yes
 
 ENCODER_ENABLE = yes
 LTO_ENABLE = yes

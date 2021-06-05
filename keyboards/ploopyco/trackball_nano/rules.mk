@@ -26,6 +26,8 @@ AUDIO_ENABLE = no           # Audio output
 POINTING_DEVICE_ENABLE = yes
 MOUSEKEY_ENABLE = no        # Mouse keys
 
+LTO_ENABLE = yes
+
 QUANTUM_LIB_SRC += analog.c
 SRC += adns5050.c opt_encoder.c
 

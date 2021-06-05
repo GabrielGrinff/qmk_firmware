@@ -18,44 +18,56 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <stdio.h>
 
 enum layer_names {
-  _HOME,
-  _MISC,
+  _TOOLS,
   _RGB,
   _BLED,
   _GAME,
-  _TOOLS
+  _SCROLL,
+};
+
+enum custom_keycodes {
+    NANO_2XNUM
+};
+
+
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+    case NANO_2XNUM:
+        if (record->event.pressed) {
+            //double tap numlock, this is used for ploopy nano to go into scroll mode
+            SEND_STRING(SS_TAP(X_NUMLOCK) SS_TAP(X_NUMLOCK));
+        }
+        break;
+    }
+    return true;
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-[_HOME] = LAYOUT(
-    KC_MPRV, KC_MNXT, KC_MPLY,
-    TO(5), KC_PGDN, KC_PGUP,
-    TO(1), KC_END, KC_HOME
-),
-[_MISC] = LAYOUT(
-    _______, _______, _______,
-    TO(0), _______, _______,
-    TO(2), _______, _______
-),
-[_RGB] = LAYOUT(
-    RGB_HUI, RGB_HUD, RGB_MOD,
-    TO(1), RGB_SAD, RGB_SAI,
-   TO(3), RGB_SPD, RGB_SPI
-),
-[_BLED] = LAYOUT(
-    BL_STEP, BL_BRTG, BL_TOGG,
-    TO(2),   BL_OFF,  BL_ON,
-	TO(4),  BL_DEC,  BL_INC
-),
-[_GAME] = LAYOUT(
-    BL_STEP, BL_BRTG, KC_MUTE,
-    TO(3),   BL_OFF,  KC_F9,
-    TO(5),  BL_ON,  KC_F5
-),
 [_TOOLS] = LAYOUT(
     LGUI(KC_A), LGUI(KC_S), KC_MUTE,
     TO(4),  LGUI(KC_V),  LGUI(KC_C),
-    TO(0),  LGUI(KC_X),  KC_ENTER
+    TO(1),  LGUI(KC_X),  KC_ENTER
+),
+[_RGB] = LAYOUT(
+    RGB_HUI, RGB_HUD, RGB_MOD,
+    TO(0), RGB_SAD, RGB_SAI,
+    TO(2), RGB_SPD, RGB_SPI
+),
+[_BLED] = LAYOUT(
+    BL_STEP, BL_BRTG, BL_TOGG,
+    TO(1),   BL_OFF,  BL_ON,
+	TO(3),  BL_DEC,  BL_INC
+),
+[_GAME] = LAYOUT(
+    BL_STEP, BL_BRTG, KC_MUTE,
+    TO(2),   BL_OFF,  KC_F9,
+    TO(4),  BL_ON,  KC_F5
+),
+[_SCROLL] = LAYOUT(
+    KC_LSHIFT, KC_LCTRL, _______,
+    TO(3), KC_LOCK, _______,
+    TO(0), NANO_2XNUM, _______
 )
 };
 
@@ -82,6 +94,12 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
             tap_code16(SGUI(KC_Z));
         } else {
             tap_code16(LGUI(KC_Z));
+        }
+    } else if (IS_LAYER_ON(_SCROLL)) {
+        if (clockwise) {
+            tap_code(KC_MS_WH_DOWN);
+        } else {
+            tap_code(KC_MS_WH_UP);
         }
     } else {
         if (clockwise) {
@@ -131,12 +149,6 @@ static void render_info(void) {
     oled_write_P(PSTR("Layer: "), false);
 
     switch (get_highest_layer(layer_state)) {
-        case _HOME:
-            oled_write_ln_P(PSTR("HOME"), false);
-            break;
-        case _MISC:
-            oled_write_ln_P(PSTR("MISC"), false);
-            break;
         case _RGB:
             oled_write_ln_P(PSTR("RGB"), false);
             break;
@@ -148,6 +160,9 @@ static void render_info(void) {
             break;
         case _TOOLS:
             oled_write_ln_P(PSTR("Tools"), false);
+            break;
+        case _SCROLL:
+            oled_write_ln_P(PSTR("Scroll"), false);
             break;
         default:
             oled_write_ln_P(PSTR("Undefined"), false);
